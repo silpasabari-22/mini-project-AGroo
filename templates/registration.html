@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Registration</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url("{% static 'img\carousel-1.jpg' %}") ;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        span {
+            color: red;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #43a047;
+            box-shadow: 0 0 5px rgba(67, 160, 71, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #43a047;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #2e7d32;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #1b5e20;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p.message {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'regist' %}" method="post">
+        {% csrf_token %}
+        <h2>Farmer Registration</h2>
+
+        <p>
+            <label>First Name <span>*</span></label>
+            <input type="text" name="firstname" required>
+        </p>
+        <p>
+            <label>Last Name <span>*</span></label>
+            <input type="text" name="lastname" required>
+        </p>
+        <p>
+            <label>Email <span>*</span></label>
+            <input type="email" name="email" required>
+        </p>   
+        <p>
+            <label for="">adress</label>
+            <input type="text" name="adress" id="">
+        </p>         
+        <p>
+            <label for="">phone</label>
+            <input type="text" name="phone" id="">
+        </p>
+        <p>            
+            <label>Password <span>*</span></label>
+            <input type="password" name="password" required>
+        </p>
+        <p>
+            <label>Confirm Password <span>*</span></label>
+            <input type="password" name="Confirm_password" required>
+        </p>
+        <p>
+            <label>Username <span>*</span></label>
+            <input type="text" name="username" required>
+        </p>
+        <p>
+            <button type="submit">Register</button>
+        </p>
+    </form>
+
+    <p class="message">{{ a }}</p>
+    <a href="{% url 'index' %}">Back to Home</a>
+</body>
+</html>

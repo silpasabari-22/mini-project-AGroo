@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmer Home • AgriMarket</title>
+  <!-- Bootstrap 5 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  />
+  <style>
+    body{
+      background: #f6f9fc;
+    }
+    .hero{
+      background: url('https://images.unsplash.com/photo-1594744803329-e58b31de8bf3?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+      min-height: 220px;
+      border-radius: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;inset:0;background:rgba(0,0,0,.35);
+    }
+    .hero-content{position:relative;z-index:1;color:#fff}
+    .stat-card{border:0;border-radius:1rem;box-shadow:0 8px 24px rgba(16,24,40,.08)}
+    .action-card{transition:transform .15s ease, box-shadow .15s ease}
+    .action-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,24,40,.14)}
+    .table thead th{white-space:nowrap}
+    .badge-soft{background:rgba(13,110,253,.12);color:#0d6efd}
+    .footer{color:#667085}
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container py-2">
+      <a class="navbar-brand fw-semibold" href="{% url 'farmer_home' %}">
+        <i class="bi bi-flower1 me-2 text-success"></i>AgriMarket
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a href="{( '{% url 'addproduct' %}' )|default:'#'}" class="nav-link"><i class="bi bi-plus-circle me-1"></i>Add Product</a></li>
+          <li class="nav-item"><a href="{% url 'farmer_product' %}" class="nav-link"><i class="bi bi-box-seam me-1"></i>My Products</a></li>
+          <li class="nav-item"><a href="{% url 'farmer_orders' %}" class="nav-link"><i class="bi bi-bag-check me-1"></i>Orders</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i>{{ request.user.username|default:'Farmer' }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'farmer_profile' %}"><i class="bi bi-gear me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'farmer_wallet' %}"><i class="bi bi-wallet2 me-2"></i>Wallet</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="{% url 'logout' %}" method="post" class="px-3">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-danger w-100"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="container my-4 my-lg-5">
+    <!-- Hero -->
+    <section class="hero d-flex align-items-center p-4 p-md-5 mb-4">
+      <div class="hero-content">
+        <div class="small mb-1">Welcome back 👋</div>
+        <h1 class="display-6 fw-semibold mb-2">Hello, {{ request.user.first_name|default:request.user.username|default:'Farmer' }}!</h1>
+        <p class="mb-0">Manage your crops, track orders, and grow your business with insights.</p>
+      </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="row g-3 g-lg-4 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-secondary small">Total Products</div>
+                <div class="fs-3 fw-semibold">{{ total_products|default:0 }}</div>
+              </div>
+              <div class="badge bg-success-subtle text-success p-3 rounded-3"><i class="bi bi-box-seam fs-5"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-secondary small">Pending Orders</div>
+                <div class="fs-3 fw-semibold">{{ pending_orders|default:0 }}</div>
+              </div>
+              <div class="badge bg-warning-subtle text-warning p-3 rounded-3"><i class="bi bi-hourglass-split fs-5"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-secondary small">Monthly Revenue</div>
+                <div class="fs-3 fw-semibold">₹{{ monthly_revenue|default:0 }}</div>
+              </div>
+              <div class="badge bg-primary-subtle text-primary p-3 rounded-3"><i class="bi bi-cash-coin fs-5"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card stat-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-secondary small">Low Stock</div>
+                <div class="fs-3 fw-semibold">{{ low_stock_count|default:0 }}</div>
+              </div>
+              <div class="badge bg-danger-subtle text-danger p-3 rounded-3"><i class="bi bi-exclamation-triangle fs-5"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">Quick Actions</h2>
+        <form class="d-none d-md-flex" action="{% url 'farmer_search' %}" method="get" role="search">
+          <input name="q" class="form-control" type="search" placeholder="Search products or orders..." />
+        </form>
+      </div>
+      <div class="row g-3 g-lg-4">
+        <div class="col-12 col-md-6 col-lg-3">
+          <a href="{% url 'add_product' %}" class="text-decoration-none">
+            <div class="card action-card h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="badge bg-success-subtle text-success p-3 rounded-3"><i class="bi bi-plus-circle fs-5"></i></div>
+                  <div>
+                    <div class="fw-semibold">Add New Product</div>
+                    <div class="text-secondary small">List fresh produce for sale</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <a href="{% url 'farmer_products' %}" class="text-decoration-none">
+            <div class="card action-card h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="badge bg-primary-subtle text-primary p-3 rounded-3"><i class="bi bi-grid fs-5"></i></div>
+                  <div>
+                    <div class="fw-semibold">Manage Products</div>
+                    <div class="text-secondary small">Edit, stock & prices</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <a href="{% url 'farmer_orders' %}" class="text-decoration-none">
+            <div class="card action-card h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="badge bg-warning-subtle text-warning p-3 rounded-3"><i class="bi bi-receipt fs-5"></i></div>
+                  <div>
+                    <div class="fw-semibold">View Orders</div>
+                    <div class="text-secondary small">Approve & dispatch</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <a href="{% url 'farmer_wallet' %}" class="text-decoration-none">
+            <div class="card action-card h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="badge bg-info-subtle text-info p-3 rounded-3"><i class="bi bi-graph-up-arrow fs-5"></i></div>
+                  <div>
+                    <div class="fw-semibold">Earnings & Wallet</div>
+                    <div class="text-secondary small">Payouts & history</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Orders -->
+    <section class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body p-0">
+        <div class="d-flex justify-content-between align-items-center p-3 p-md-4">
+          <h2 class="h5 mb-0">Recent Orders</h2>
+          <a href="{% url 'farmer_orders' %}" class="btn btn-sm btn-outline-primary">See all</a>
+        </div>
+        <div class="table-responsive px-3 pb-3 px-md-4 pb-md-4">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Buyer</th>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for o in recent_orders %}
+              <tr>
+                <td>#{{ o.id }}</td>
+                <td>{{ o.buyer_name }}</td>
+                <td>{{ o.product_name }}</td>
+                <td>{{ o.quantity }}</td>
+                <td>₹{{ o.total_amount }}</td>
+                <td>
+                  <span class="badge rounded-pill bg-{% if o.status == 'Pending' %}warning{% elif o.status == 'Shipped' %}info{% elif o.status == 'Delivered' %}success{% else %}secondary{% endif %}">
+                    {{ o.status }}
+                  </span>
+                </td>
+                <td>{{ o.created_at|date:"d M, Y" }}</td>
+                <td>
+                  <a href="{% url 'farmer_order_detail' o.id %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8" class="text-center text-secondary py-4">No recent orders.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Low Stock Alert -->
+    <section class="card border-0 shadow-sm rounded-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 mb-0">Low Stock Items</h2>
+          <a href="{% url 'farmer_products' %}" class="btn btn-sm btn-outline-secondary">Manage</a>
+        </div>
+        <div class="row g-3">
+          {% for p in low_stock_products %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center">
+              <div>
+                <div class="fw-semibold">{{ p.name }}</div>
+                <div class="text-secondary small">Stock: {{ p.stock }}</div>
+              </div>
+              <a href="{% url 'edit_product' p.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <div class="text-secondary small">All good! No low-stock alerts.</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer border-top bg-white py-3">
+    <div class="container d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center">
+      <div class="small">© <span id="year"></span> AgriMarket • Farmer Portal</div>
+      <div class="small">
+        <span class="badge badge-soft me-2"><i class="bi bi-shield-check me-1"></i>Secure</span>
+        <a href="{% url 'support' %}" class="text-decoration-none">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

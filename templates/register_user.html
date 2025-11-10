@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            animation: fadeIn 1.2s ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2b2b2b;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 14px;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3cb371;
+            box-shadow: 0 0 5px #3cb371;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3cb371;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #2e8b57;
+        }
+
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>User Registration</h2>
+        <form action="{% url 'register_user' %}" method="post">
+            {% csrf_token %}
+            <label>First Name</label>
+            <input type="text" name="firstname" placeholder="Enter your firstname" required>
+            <label>Last Name</label>
+            <input type="text" name="lastname" placeholder="Enter your lastname" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            
+            <label for="">adress</label>
+            <input type="text" name="adress" id="">
+
+            <label for="">phone</label>
+            <input type="text" name="phone" id="">
+    
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Choose a username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+
+            <button type="submit">Register</button>
+
+        </form>
+    </div>
+
+</body>
+</html>
