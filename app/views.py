@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import auth
-from .models import Customuser
+from .models import *
 
 
 
@@ -103,13 +103,37 @@ def Logout(request):
 def farmer_home(request):
     return render(request,'farmer_home.html')
 
-def addproduct(request):
-    return render(request,'Addproduct.html')
-
+def addproduct(request): 
+    if request.method=='POST':
+        farmer_id=Customuser.objects.get(id=request.user.id)
+        product_name=request.POST.get('product_name')
+        product_category=request.POST.get('product_category')
+        product_image=request.FILES['product_image']
+        quantity=request.POST.get('quantity')
+        price=request.POST.get('price')
+        data=Product(farmer_id=farmer_id,product_name=product_name,product_category=product_category,product_image=product_image,quantity=quantity,price=price)
+        data.save()
+        return redirect('addproduct') 
+    else : 
+        a=Product.objects.filter(farmer_id=request.user.id)
+        return render(request,'addproduct.html',{'a':a})
 def farmer_products(request):
-    return render(request,'farmer_products.html')
+    if request.method=='POST':
+        farmer_id=Customuser.objects.get(id=request.user.id)
+        product_name=request.POST.get('product_name')
+        product_category=request.POST.get('product_category')
+        product_image=request.FILES['product_image']
+        quantity=request.POST.get('quantity')
+        price=request.POST.get('price')
+        data=Product(farmer_id=farmer_id,product_name=product_name,product_category=product_category,product_image=product_image,quantity=quantity,price=price)
+        data.save()
+        return redirect('farmer_products') 
+    else : 
+        a=Product.objects.filter(farmer_id=request.user.id)
+        return render(request,'farmer_products.html',{'a':a})
 
 def farmer_orders(request):
+
     return render(request,'farmer_orders.html')
 
 def farmer_profile(request):

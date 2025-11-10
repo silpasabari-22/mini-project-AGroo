@@ -100,7 +100,8 @@
         🌿 Agri Product Form
     </header>
 
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="{% url 'addproduct' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         <h2>Product Details</h2>
 
         <label for="product">Product Name</label>
@@ -117,7 +118,7 @@
             <option value="fruits">Fruits</option>
         </select>
         <label for="img">Product Image</label>
-        <input type="file" name="product_image" id="img" accept="image/*">
+        <input type="file" name="product_image" id="img">
 
         <label for="quantity">Quantity</label>
         <input type="number" name="quantity" id="quantity" placeholder="Enter quantity">
@@ -127,6 +128,23 @@
 
         <input type="submit" value="Submit">
     </form>
+
+
+
+
+    <table>
+      
+            <tr>
+                <th>product name</th>
+                <th>price</th>
+            </tr>
+        {% for i in a %}
+            <tr>
+                <td>{{i.product_name}}</td>
+                <td>{{i.price}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
     <footer>
         © 2025 AgriMarket | All Rights Reserved 🌱
