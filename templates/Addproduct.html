@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,6 +96,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         🌿 Agri Product Form
@@ -109,7 +111,7 @@
 
         <label for="category">Product Category</label>
         <select id="category" name="product_category">
-            <option value=""disabled selected hidden>Select a category</option>
+            <option value="" disabled selected hidden>Select a category</option>
             <option value="equipments">Farming Equipments</option>
             <option value="fertilizers">Fertilizers</option>
             <option value="plants">Plants</option>
@@ -130,25 +132,56 @@
     </form>
 
 
+    <style>
+    table {
+        width: 100%;
+        border-collapse: collapse; /* ✅ removes double borders */
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    th, td {
+        border: 1px solid #333;  /* table borders */
+        padding: 10px;           /* spacing */
+        text-align: left;
+    }
+
+    th {
+        background-color: #4CAF50; /* header color */
+        color: white;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2; /* zebra rows */
+    }
+
+    tr:hover {
+        background-color: #ddd; /* hover effect */
+    }
+</style>
 
 
     <table>
-      
-            <tr>
-                <th>product name</th>
-                <th>price</th>
-            </tr>
+
+        <tr>
+            <th>product name</th>
+            <th>Quantity</th>
+            <th>price</th>
+            <th>product Image</th>
+        </tr>
         {% for i in a %}
-            <tr>
-                <td>{{i.product_name}}</td>
-                <td>{{i.price}}</td>
-            </tr>
+        <tr>
+            <td>{{i.product_name}}</td>
+            <td>{{i.quantity}}</td> 
+            <td>{{i.price}}</td>
+            <td>{{i.product_image}}</td>
+        </tr>
         {% endfor %}
     </table>
-
     <footer>
         © 2025 AgriMarket | All Rights Reserved 🌱
     </footer>
 </body>
-</html>
 
+</html>

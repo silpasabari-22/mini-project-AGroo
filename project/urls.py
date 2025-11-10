@@ -36,10 +36,10 @@ urlpatterns = [
     path('logout',views.Logout,name='logout'),
     path('farmer_home',views.farmer_home,name='farmer_home'),
     path('addproduct',views.addproduct,name='addproduct'),
-    path('farmer_products',views.farmer_products,name='farmer_products'),
     path('farmer_orders',views.farmer_orders,name='farmer_orders'),
     path('farmer_profile',views.farmer_profile,name='farmer_profile'),
     path('farmer_wallet',views.farmer_wallet,name='farmer_wallet'),
+    path('view_product', views.viewproducts, name='view_product'),
 ]
 
 if settings.DEBUG:
