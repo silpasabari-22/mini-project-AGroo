@@ -71,7 +71,7 @@ def Login(request):
 
             if user.users == "farmer":
                 login(request,user)
-                return redirect('farmer_home')
+                return redirect('farmer_home2')
             if user.users == "user":
                 login(request,user)
                 return redirect('user')
@@ -81,27 +81,32 @@ def Login(request):
     else:
         return render(request,'login1.html')
 
-def user(request):
-    return render(request,'userhome.html')
+def user_home(request):
+    products = Product.objects.all()
+    return render(request, "userhome.html", {"products": products})
+
+def user_home2(request):
+    return render(request,'user_home2.html')
+
+def category_products(request, category_name):
+    products = Product.objects.filter(product_category=category_name)
+    return render(request, "userhome.html", {"products": products})
 
 def farmer_home(request):
     return render(request,'farmer_home.html')
 
-
+def profile(request):
+    a=Customuser.objects.get(id=request.user.id)
+    return render(request,'profile.html',{'a':a})
 
 # def profile(request):
-#     a=User.objects.get(id=request.user.id)
-#     return render(request,'profile.html',{'a':a})
-def profile(request):
-    return render(request, 'profile.html', {'a': request.user})
+#     return render(request, 'profile.html', {'a': request.user})
 
 
 def Logout(request):
     auth.logout(request)
     return redirect('index')
 
-def farmer_home(request):
-    return render(request,'farmer_home.html')
 
 def addproduct(request): 
     if request.method=='POST':
@@ -113,10 +118,36 @@ def addproduct(request):
         price=request.POST.get('price')
         data=Product(farmer_id=farmer_id,product_name=product_name,product_category=product_category,product_image=product_image,quantity=quantity,price=price)
         data.save()
-        return redirect('addproduct') 
+        return redirect('farmer_home2') 
     else : 
         a=Product.objects.filter(farmer_id=request.user.id)
         return render(request,'addproduct.html',{'a':a})
+    
+def viewproducts(request):
+    products = Product.objects.all()
+    return render(request, "view_product.html", {"products": products})
+
+def delete(request,pk):
+    a=Product.objects.get(id=pk)
+    a.delete()
+    return redirect('farmer_home2')
+
+def edit(request, pk):
+    product = Product.objects.get(id=pk)
+    if request.method == 'POST':
+        product.product_name = request.POST.get('product_name')
+        product.product_category = request.POST.get('product_category')
+        if 'product_image' in request.FILES:
+            product.product_image = request.FILES['product_image']
+        product.quantity = request.POST.get('quantity')
+        product.price = request.POST.get('price')
+        product.save()
+        return redirect('farmer_home2')
+    return render(request, 'edit_product.html', {'product': product})
+
+
+
+
 
 
 def farmer_orders(request):
@@ -132,3 +163,7 @@ def farmer_wallet(request):
 def viewproducts(request):
     products = Product.objects.all()
     return render(request, "view_product.html", {"products": products})
+
+def farmer_home2(request):
+    products = Product.objects.filter(farmer_id=request.user.id)
+    return render(request, "farmer_home2.html", {"products": products})
