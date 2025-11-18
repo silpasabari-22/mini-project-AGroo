@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -145,6 +146,22 @@ def edit(request, pk):
         return redirect('farmer_home2')
     return render(request, 'edit_product.html', {'product': product})
 
+
+def product_detail(request, pk):
+    product = Product.objects.get(id=pk)
+    return render(request, "view_product_detail.html", {"product": product})
+
+# def product_detail(request):
+#     return render(request, 'view_product_detail.html')
+def cart(request, pk):
+    product = Product.objects.get(id=pk)
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity'))
+        price = product.price * quantity
+        items = Cart(user_id=request.user, product_id=product, price=price, quantity=quantity)
+        items.save()
+        return redirect('user_home')
+        return render(request, 'cart.html', {'product': product})
 
 
 

@@ -40,11 +40,14 @@ urlpatterns = [
     path('logout',views.Logout,name='logout'),
     path('farmer_home',views.farmer_home,name='farmer_home'),
     path('addproduct',views.addproduct,name='addproduct'),
+    path('cart/<int:pk>/', views.cart, name='cart'),
+
     path('farmer_orders',views.farmer_orders,name='farmer_orders'),
     path('farmer_profile',views.farmer_profile,name='farmer_profile'),
     path('farmer_wallet',views.farmer_wallet,name='farmer_wallet'),
     path('view_product', views.viewproducts, name='view_product'),
     path('edit/<int:pk>', views.edit, name='edit'),
+    path('product_details/<int:pk>/',views.product_detail,name='product_details'),
     path('category/<str:category_name>/', views.category_products, name='category_products'),
 ]
 
