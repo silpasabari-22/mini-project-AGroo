@@ -31,23 +31,20 @@ urlpatterns = [
     path('regist',views.register,name='regist'),
     path('register_user',views.register_user,name='register_user'),
     path('user',views.user_home,name='user'),
-    path('user_home2',views.user_home2,name='user_home2'),
-    path('farmer_home',views.farmer_home,name='farmer_home'),
     path('farmer_home2',views.farmer_home2,name='farmer_home2'),
-
+    path('edit/<int:pk>/', views.edit, name='edit'),
     path('delete/<int:pk>',views.delete,name='delete'),
     path('profile/',views.profile,name='profile'),
     path('logout',views.Logout,name='logout'),
-    path('farmer_home',views.farmer_home,name='farmer_home'),
     path('addproduct',views.addproduct,name='addproduct'),
-    path('cart/<int:pk>/', views.cart, name='cart'),
+    path('view_product', views.viewproducts, name='view_product'),
+    path('product_details/<int:pk>/',views.product_detail,name='product_details'),
+    path('cart/<int:pk>/', views.addcart, name='cart'),
+    path('cartview/', views.cartview, name='cartview'),
 
     path('farmer_orders',views.farmer_orders,name='farmer_orders'),
     path('farmer_profile',views.farmer_profile,name='farmer_profile'),
     path('farmer_wallet',views.farmer_wallet,name='farmer_wallet'),
-    path('view_product', views.viewproducts, name='view_product'),
-    path('edit/<int:pk>', views.edit, name='edit'),
-    path('product_details/<int:pk>/',views.product_detail,name='product_details'),
     path('category/<str:category_name>/', views.category_products, name='category_products'),
 ]
 

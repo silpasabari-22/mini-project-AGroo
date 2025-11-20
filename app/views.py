@@ -86,15 +86,12 @@ def user_home(request):
     products = Product.objects.all()
     return render(request, "userhome.html", {"products": products})
 
-def user_home2(request):
-    return render(request,'user_home2.html')
 
 def category_products(request, category_name):
     products = Product.objects.filter(product_category=category_name)
     return render(request, "userhome.html", {"products": products})
 
-def farmer_home(request):
-    return render(request,'farmer_home.html')
+
 
 def profile(request):
     a=Customuser.objects.get(id=request.user.id)
@@ -107,6 +104,11 @@ def profile(request):
 def Logout(request):
     auth.logout(request)
     return redirect('index')
+
+
+def farmer_home2(request):
+    products = Product.objects.filter(farmer_id=request.user.id)
+    return render(request, "farmer_home2.html", {"products": products})
 
 
 def addproduct(request): 
@@ -151,17 +153,19 @@ def product_detail(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, "view_product_detail.html", {"product": product})
 
-# def product_detail(request):
-#     return render(request, 'view_product_detail.html')
-def cart(request, pk):
+
+def addcart(request, pk):
     product = Product.objects.get(id=pk)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity'))
-        price = product.price * quantity
-        items = Cart(user_id=request.user, product_id=product, price=price, quantity=quantity)
-        items.save()
-        return redirect('user_home')
-        return render(request, 'cart.html', {'product': product})
+    items = Cart(user_id=request.user, product_id=product)
+    items.save()
+    return redirect('user')
+    
+def cartview(request):
+    a=Cart.objects.filter(user_id=request.user.id)
+    
+    return render(request, 'cart.html', {'a': a})
+
+
 
 
 
@@ -181,6 +185,3 @@ def viewproducts(request):
     products = Product.objects.all()
     return render(request, "view_product.html", {"products": products})
 
-def farmer_home2(request):
-    products = Product.objects.filter(farmer_id=request.user.id)
-    return render(request, "farmer_home2.html", {"products": products})
