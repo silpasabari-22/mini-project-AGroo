@@ -41,6 +41,12 @@ urlpatterns = [
     path('product_details/<int:pk>/',views.product_detail,name='product_details'),
     path('cart/<int:pk>/', views.addcart, name='cart'),
     path('cartview/', views.cartview, name='cartview'),
+    path('remove/<int:pk>/', views.remove_cart_item, name='remove'),
+    path('update_quantity/<int:id>/', views.update_quantity, name='update_quantity'),
+    path('place_order/', views.place_order, name='place_order'),
+
+
+
 
     path('farmer_orders',views.farmer_orders,name='farmer_orders'),
     path('farmer_profile',views.farmer_profile,name='farmer_profile'),

@@ -94,7 +94,7 @@
                 <div class="navbar-nav mx-auto p-4 p-lg-0">
                     <a href="{% url 'index' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
                     <a href="{% url 'about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
-                    <a href="{% url 'view_product' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'product' %}active{% endif %}">Products</a>
+                    <a href="{% url 'user' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'product' %}active{% endif %}">Products</a>
                     <a href="{% url 'contact' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
                     <a href="{% url 'blog' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
                 </div>

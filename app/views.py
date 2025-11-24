@@ -1,10 +1,11 @@
 from urllib import request
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import auth
 from .models import *
+from django.contrib import messages
 
 
 
@@ -158,12 +159,65 @@ def addcart(request, pk):
     product = Product.objects.get(id=pk)
     items = Cart(user_id=request.user, product_id=product)
     items.save()
-    return redirect('user')
+    return redirect('cartview')
     
 def cartview(request):
     a=Cart.objects.filter(user_id=request.user.id)
     
     return render(request, 'cart.html', {'a': a})
+
+
+def remove_cart_item(request, pk):
+    item = get_object_or_404(Cart, id=pk, user_id=request.user.id)
+    item.delete()
+    return redirect('cartview')  
+
+
+def update_quantity(request, id):
+    item = get_object_or_404(Cart, id=id, user_id=request.user.id)
+    action = request.GET.get('action') 
+    if item.quantity is None:
+        item.quantity = 1
+    if action == 'inc':
+        item.quantity += 1
+        
+    elif action == 'dec':
+        if item.quantity > 1:
+            item.quantity -= 1
+            
+        else:
+            item.delete()  # Remove if qty goes to 0
+            return redirect('cartview')
+    item.price = item.quantity * item.product_id.price
+    item.save()
+    return redirect('cartview') 
+
+
+def cartview(request):
+    a = Cart.objects.filter(user_id=request.user.id)
+
+    # Calculate grand total
+    grand_total = sum(item.price for item in a)
+
+    return render(request, 'cart.html', {'a': a, 'grand_total': grand_total})
+
+
+def place_order(request):
+    cart_items = Cart.objects.filter(user_id=request.user.id)
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty!")
+        return redirect('cartview')
+
+    # After placing order, clear cart (temporary logic)
+    cart_items.delete()
+
+    messages.success(request, "Your order has been placed successfully!")
+    return redirect('cartview')
+
+
+
+
 
 
 

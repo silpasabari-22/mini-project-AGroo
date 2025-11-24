@@ -92,8 +92,8 @@
         <th>Image</th>
         <th>Product Name</th>
         <th>Price</th>
+        <th>Total Price</th>
         <th>Quantity</th>
-        <th>Total</th>
         <th>Action</th>
     </tr>
 
@@ -105,25 +105,28 @@
 
         <td>₹{{ item.product_id.price }}</td>
 
+        <td>₹{{ item.price }}</td>
+
+
         <!-- Quantity Increase / Decrease -->
         <td>
-            <a href="{% url 'decrease_qty' item.id %}">
+            <a href="{% url 'update_quantity' item.id %}?action=dec">
                 <button class="qty-btn">-</button>
             </a>
 
-            <strong>{{ item.quantity }}</strong>
+            <strong>{{item.quantity}} </strong>
 
-            <a href="{% url 'increase_qty' item.id %}">
+            <a href="{% url 'update_quantity' item.id %}?action=inc">
                 <button class="qty-btn">+</button>
             </a>
         </td>
 
         <!-- Total Price (price × qty) -->
-        <td>₹{{ item.product_id.price * item.quantity }}</td>
+     
 
         <!-- Remove Item -->
         <td>
-            <a href="{% url 'remove_from_cart' item.id %}">
+            <a href="{% url 'remove' item.id %}">
                 <button class="remove-btn">Remove</button>
             </a>
         </td>
@@ -131,35 +134,25 @@
     {% endfor %}
 </table>
 
+
+
+
 <!-- Grand Total Box -->
 <div class="total-box">
-    <strong>Grand Total: </strong> ₹
-    {% with total=0 %}
-        {% for item in a %}
-            {% with price=item.product_id.price|floatformat:"2" %}
-                {% with line_total=item.product_id.price|floatformat:"2" %}
-                {% endwith %}
-            {% endwith %}
+    <strong>Grand Total: </strong> ₹{{ grand_total }}
+     <br><br>
+    <a href="{% url 'place_order' %}">
+        <button class="qty-btn" style="padding: 10px 20px; font-size: 16px;">
+            Place Order
+        </button>
+    </a>
+    <strong>{% if messages %}
+        {% for message in messages %}
+            {{ message }}
         {% endfor %}
-    {% endwith %}
+    {% endif %}</strong>
 
-    <!-- Simple total calculation -->
-    {% with final_total=0 %}
-        {% for item in a %}
-            {% with final_total=final_total|add:item.product_id.price|mul:item.quantity %}
-            {% endwith %}
-        {% endfor %}
-    {% endwith %}
-
-    {% comment %} Simpler version below {% endcomment %}
-    {% with total=0 %}
-        {% for item in a %}
-            {% with total=total|add:item.product_id.price|mul:item.quantity %}
-            {% endwith %}
-        {% endfor %}
-        {{ total }}
-    {% endwith %}
-</div>
-
+</div>  
+<!-- Simple total calculation -->
 </body>
 </html>
