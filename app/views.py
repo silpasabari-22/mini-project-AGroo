@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import auth
 from .models import *
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
@@ -156,10 +157,31 @@ def product_detail(request, pk):
 
 
 def addcart(request, pk):
-    product = Product.objects.get(id=pk)
-    items = Cart(user_id=request.user, product_id=product)
-    items.save()
+
+    # Check login
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    product = get_object_or_404(Product, id=pk)
+
+    # Check if item already in cart
+    cart_item, created = Cart.objects.get_or_create(
+        user_id=request.user,
+        product_id=product
+    )
+
+    # If already in cart, increase quantity
+    if not created:
+        cart_item.quantity += 1
+    else:
+        cart_item.quantity = 1   # first time added
+
+    # Update price also
+    cart_item.price = cart_item.quantity * product.price
+    cart_item.save()
+
     return redirect('cartview')
+
     
 def cartview(request):
     a=Cart.objects.filter(user_id=request.user.id)
@@ -202,6 +224,29 @@ def cartview(request):
     return render(request, 'cart.html', {'a': a, 'grand_total': grand_total})
 
 
+
+def delivery_address(request):
+    return render(request, 'delivery_address.html')
+
+
+
+@login_required(login_url='login')
+def save_address(request):
+    if request.method == 'POST':
+        request.session['delivery_address'] = {
+            'fullname': request.POST.get('fullname'),
+            'phone': request.POST.get('phone'),
+            'address': request.POST.get('address'),
+            'city': request.POST.get('city'),
+            'pincode': request.POST.get('pincode'),
+        }
+        messages.success(request, "Address saved successfully!")
+        return redirect('order_summary')  # Next page
+    
+    return redirect('delivery_address')
+
+
+@login_required(login_url='login')
 def place_order(request):
     cart_items = Cart.objects.filter(user_id=request.user.id)
 
@@ -209,11 +254,9 @@ def place_order(request):
         messages.error(request, "Your cart is empty!")
         return redirect('cartview')
 
-    # After placing order, clear cart (temporary logic)
-    cart_items.delete()
+    # Continue to checkout steps
+    return redirect('delivery_address')
 
-    messages.success(request, "Your order has been placed successfully!")
-    return redirect('cartview')
 
 
 
