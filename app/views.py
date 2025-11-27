@@ -70,7 +70,7 @@ def Login(request):
         print("aaaa")
         user=authenticate(request,username=username,password=password)
         print(user)
-        if user is not None and user.is_superuser==False:
+        if user is not None and user.is_staff==False:
 
             if user.users == "farmer":
                 login(request,user)
@@ -98,6 +98,25 @@ def category_products(request, category_name):
 def profile(request):
     a=Customuser.objects.get(id=request.user.id)
     return render(request,'profile.html',{'a':a})
+
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.address = request.POST.get('address')
+        user.phone = request.POST.get('phone')
+
+        if 'profile_image' in request.FILES:
+            user.profile_image = request.FILES['profile_image']
+
+        user.save()
+        return redirect('profile')
+
+    return render(request, 'edit_profile.html', {'user': user})
+
+
 
 # def profile(request):
 #     return render(request, 'profile.html', {'a': request.user})
@@ -154,8 +173,10 @@ def edit(request, pk):
 def product_detail(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, "view_product_detail.html", {"product": product})
+ 
 
 
+@login_required(login_url='login')
 def addcart(request, pk):
 
     # Check login
@@ -232,18 +253,57 @@ def delivery_address(request):
 
 @login_required(login_url='login')
 def save_address(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     if request.method == 'POST':
-        request.session['delivery_address'] = {
-            'fullname': request.POST.get('fullname'),
-            'phone': request.POST.get('phone'),
-            'address': request.POST.get('address'),
-            'city': request.POST.get('city'),
-            'pincode': request.POST.get('pincode'),
-        }
-        messages.success(request, "Address saved successfully!")
-        return redirect('order_summary')  # Next page
-    
-    return redirect('delivery_address')
+        address, created = DeliveryAddress.objects.get_or_create(user=request.user)
+
+        address.full_name = request.POST.get('full_name')
+        address.phone = request.POST.get('phone')
+        address.pincode = request.POST.get('pincode')
+        address.state = request.POST.get('state')
+        address.city = request.POST.get('city')
+        address.house = request.POST.get('house')
+        address.area = request.POST.get('area')
+        address.landmark = request.POST.get('landmark')
+
+        address.save()
+        return redirect('order_summary')
+
+    return render(request, 'delivery_address.html')
+
+
+
+def order_summary(request):
+    user = request.user
+
+    # Get user cart
+    cart_items = Cart.objects.filter(user_id=user)
+    if not cart_items.exists():
+        return redirect('cartview')
+
+    # Get user address
+    try:
+        address = DeliveryAddress.objects.get(user=user)
+    except DeliveryAddress.DoesNotExist:
+        return redirect('delivery_address')  # Force user to fill address
+
+    # Calculate totals
+    subtotal = sum(item.product_id.price * item.quantity for item in cart_items)
+    shipping = 50
+    total_amount = subtotal + shipping
+
+    context = {
+        'cart_items': cart_items,
+        'address': address,
+        'subtotal': subtotal,
+        'shipping': shipping,
+        'total_amount': total_amount,
+    }
+
+    return render(request, 'order_summary.html', context)
+
 
 
 @login_required(login_url='login')
@@ -256,6 +316,11 @@ def place_order(request):
 
     # Continue to checkout steps
     return redirect('delivery_address')
+
+
+def product(request):
+    products = Product.objects.all()
+    return render(request, "product.html", {"products": products})
 
 
 

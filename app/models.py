@@ -49,17 +49,12 @@ class DeliveryAddress(models.Model):
     house_no = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
+    district = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
 
     # Optional fields
     landmark = models.CharField(max_length=255, blank=True, null=True)
     alternate_phone = models.CharField(max_length=15, blank=True, null=True)
-
-    # Default checkbox (like Flipkart "Use as Default Address")
-    is_default = models.BooleanField(default=False)
-
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.full_name} - {self.city}"

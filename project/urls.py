@@ -35,6 +35,7 @@ urlpatterns = [
     path('edit/<int:pk>/', views.edit, name='edit'),
     path('delete/<int:pk>',views.delete,name='delete'),
     path('profile/',views.profile,name='profile'),
+    path('edit_profile/',views.edit_profile,name='edit_profile'),
     path('logout',views.Logout,name='logout'),
     path('addproduct',views.addproduct,name='addproduct'),
     path('view_product', views.viewproducts, name='view_product'),
@@ -46,6 +47,8 @@ urlpatterns = [
     path('place_order/', views.place_order, name='place_order'),
     path('delivery_address/', views.delivery_address, name='delivery_address'),
     path('save_address/', views.save_address, name='save_address'),
+    path('order_summary/', views.order_summary, name='order_summary'),
+    path('product', views.product, name='product'),
 
 
 

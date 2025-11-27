@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Summary</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f5f5f5;
+        }
+        .container{
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h2{
+            color: #444;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td{
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn{
+            background: #ff9f00;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .right{
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Delivery Address</h2>
+    <p>
+        {{ address.full_name }} <br>
+        {{ address.mobile }} <br>
+        {{ address.address }} <br>
+         {{ address.city }} <br>
+        {{ address.district }} - {{ address.pincode }}
+    </p>
+
+    <h2>Order Items</h2>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.product_id.product_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.product_id.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Price Details</h2>
+    <p>Subtotal: ₹{{ subtotal }}</p>
+    <p>Shipping: ₹{{ shipping }}</p>
+    <h3>Total Amount: ₹{{ total_amount }}</h3>
+
+    <a href="" class="btn">Payment Options</a>
+
+</div>
+
+</body>
+</html>
