@@ -105,11 +105,8 @@ def edit_profile(request):
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')
         user.email = request.POST.get('email')
-        user.address = request.POST.get('address')
+        user.adress = request.POST.get('adress')
         user.phone = request.POST.get('phone')
-
-        if 'profile_image' in request.FILES:
-            user.profile_image = request.FILES['profile_image']
 
         user.save()
         return redirect('profile')
@@ -255,7 +252,7 @@ def delivery_address(request):
 def save_address(request):
     if not request.user.is_authenticated:
         return redirect('login')
-
+    user = request.user
     if request.method == 'POST':
         address, created = DeliveryAddress.objects.get_or_create(user=request.user)
 
@@ -271,7 +268,7 @@ def save_address(request):
         address.save()
         return redirect('order_summary')
 
-    return render(request, 'delivery_address.html')
+    return render(request, 'delivery_address.html', {'user': user})
 
 
 
@@ -315,7 +312,7 @@ def place_order(request):
         return redirect('cartview')
 
     # Continue to checkout steps
-    return redirect('delivery_address')
+    return redirect('save_address')
 
 
 def product(request):

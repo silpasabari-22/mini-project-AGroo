@@ -2,55 +2,140 @@
 <html>
 <head>
     <title>Order Summary</title>
+
     <style>
-        body{
-            font-family: Arial;
-            background: #f5f5f5;
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f3;
+            margin: 0;
+            padding: 0;
         }
-        .container{
+
+        /* NAVBAR */
+        .navbar {
+            background: #2563eb;
+            padding: 15px 50px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .navbar h2 {
+            margin: 0;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+
+        .container {
             width: 60%;
-            margin: auto;
+            margin: 40px auto;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            animation: fadeIn 0.4s ease-in-out;
         }
-        h2{
-            color: #444;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        table{
+
+        h2 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .address-box {
+            background: #f0f9ff;
+            padding: 15px;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
         }
-        table th, table td{
-            padding: 10px;
+
+        table th {
+            background: #2563eb;
+            color: white;
+            padding: 12px;
+            font-size: 15px;
+        }
+
+        table td {
+            padding: 12px;
             border-bottom: 1px solid #ddd;
+            text-align: center;
+            background: #fafafa;
         }
-        .btn{
-            background: #ff9f00;
-            padding: 10px 20px;
+
+        .price-box {
+            margin-top: 25px;
+            background: #fff7ed;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .price-box p,
+        .price-box h3 {
+            margin: 8px 0;
+        }
+
+        .btn {
+            background: #22c55e;
+            padding: 12px 25px;
             text-decoration: none;
             color: white;
-            border-radius: 5px;
+            border-radius: 6px;
             display: inline-block;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: 0.2s;
         }
-        .right{
-            text-align: right;
+
+        .btn:hover {
+            background: #15803d;
         }
     </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>My Store</h2>
+    <div>
+        <a href="{% url 'user' %}">Home</a>
+        <a href="{% url 'cartview' %}">Cart</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
 <div class="container">
 
     <h2>Delivery Address</h2>
-    <p>
+    <div class="address-box">
         {{ address.full_name }} <br>
         {{ address.mobile }} <br>
         {{ address.address }} <br>
-         {{ address.city }} <br>
+        {{ address.city }} <br>
         {{ address.district }} - {{ address.pincode }}
-    </p>
+    </div>
 
     <h2>Order Items</h2>
 
@@ -67,16 +152,20 @@
             <td>{{ item.product_id.product_name }}</td>
             <td>{{ item.quantity }}</td>
             <td>₹{{ item.product_id.price }}</td>
+            <td>₹{{ item.quantity|floatformat:0|add:item.product_id.price }}</td>
         </tr>
         {% endfor %}
     </table>
 
     <h2>Price Details</h2>
-    <p>Subtotal: ₹{{ subtotal }}</p>
-    <p>Shipping: ₹{{ shipping }}</p>
-    <h3>Total Amount: ₹{{ total_amount }}</h3>
 
-    <a href="" class="btn">Payment Options</a>
+    <div class="price-box">
+        <p><strong>Subtotal:</strong> ₹{{ subtotal }}</p>
+        <p><strong>Shipping:</strong> ₹{{ shipping }}</p>
+        <h3><strong>Total Amount:</strong> ₹{{ total_amount }}</h3>
+    </div>
+
+    <a href="" class="btn">Proceed to Payment</a>
 
 </div>
 
